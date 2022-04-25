@@ -13,25 +13,49 @@ class Philosopher{
 
     readonly int StarvationThreshold;
 
-    public readonly ChopStick RightChopStick;
-    public readonly ChopStick LeftChopStick;
+    public readonly Chopstick RightChopstick;
+    public readonly Chopstick LeftChopstick;
 
     Random rand = new Random();
 
     int contThinkCOunt = 0;
 
-    public Philosopher(ChopStick rightChopStick, ChopStick leftChopStick, string name, int starvationThreshold){
-        RightChopStick = rightChopStick;
-        LeftChopStick = leftChopStick;
+    public Philosopher(Chopstick rightChopstick, Chopstick leftChopstick, string name, int starvationThreshold){
+        RightChopstick = rightChopstick;
+        LeftChopstick = leftChopstick;
         Name = name;
         State = PhilosopherState.Thinking;
         StarvationThreshold = starvationThreshold;
     }
+
+    private bool TakeChopstickInLeftHand() => LeftChopstick.Take(Name);
+
+    private bool TakeChopstickInRightHand() => RightChopstick.Take(Name);
 }
 
-enum ChopStickState{ Taken, onTable }
-class ChopStick{
+enum ChopstickState{ Taken, onTable }
+class Chopstick{
     public string ChopStickID{ get; set; }
-    public ChopStickState State{ get; set; }
+    public ChopstickState State{ get; set; }
     public string TakenBy{ get; set; }
+
+    public bool Take(string takenBy){
+        lock (this){
+            if (this.State == ChopstickState.onTable){
+                State = ChopstickState.Taken;
+                TakenBy = takenBy;
+                Console.WriteLine($"{ChopStickID} is taken by {TakenBy}");
+                return true;
+            }
+            
+            State = ChopstickState.Taken;
+            return false;
+        }
+    }
+
+    public void Put(){
+        State = ChopstickState.onTable;
+        Console.WriteLine($"{ChopStickID} is placed on the table by {TakenBy}");
+        TakenBy = String.Empty;
+    }
 }
