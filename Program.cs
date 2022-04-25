@@ -46,29 +46,54 @@ class Philosopher{
     public void Eat(){
         if (TakeChopstickInRightHand()){
             if (TakeChopstickInLeftHand()){
-                this.State = PhilosopherState.Eating;
-                timesEaten++;
-                Console.WriteLine($"{Name} is eating for the {timesEaten}th time, with {RightChopstick.ChopStickID} and {LeftChopstick.ChopStickID}");
-                Thread.Sleep(rand.Next(5000,10000));
+                Eating();
+            }
 
-                contThinkCount = 0;
-                
-                RightChopstick.Put();
-                LeftChopstick.Put();
+            else{
+                Thread.Sleep(rand.Next(100, 400));
+                if (TakeChopstickInLeftHand()){
+                    Eating();
+                }
+                else{
+                    RightChopstick.Put();
+                }
+            }
+        }
+        else{
+            if (TakeChopstickInLeftHand()){
+                Thread.Sleep(rand.Next(100,400));
+                if (TakeChopstickInRightHand()){
+                    Eating();
+                }
+                else{
+                    LeftChopstick.Put();
+                }
             }
         }
 
         Think();
     }
 
+    void Eating(){
+        this.State = PhilosopherState.Eating;
+        Console.WriteLine(
+            $"(:::) {Name} is eating for the {++timesEaten}th time, with {RightChopstick.ChopStickID} and {LeftChopstick.ChopStickID}");
+        Thread.Sleep(rand.Next(5000, 10000));
+        
+        contThinkCount = 0;
+                
+        RightChopstick.Put();
+        LeftChopstick.Put();
+    }
+
     public void Think(){
         this.State = PhilosopherState.Thinking;
-        Console.WriteLine($"{Name} is thinking...on {Thread.CurrentThread.Priority.ToString()}");
+        Console.WriteLine($"^^*^^ {Name} is thinking...on {Thread.CurrentThread.Priority.ToString()}");
         Thread.Sleep(rand.Next(2500, 20000));
         contThinkCount++;
 
         if (contThinkCount > StarvationThreshold){
-            Console.WriteLine($"{Name} is starving");
+            Console.WriteLine($":ooooooooo: {Name} is starving");
         }
         
         Eat();
@@ -90,7 +115,7 @@ class Chopstick{
             if (this.State == ChopstickState.onTable){
                 State = ChopstickState.Taken;
                 TakenBy = takenBy;
-                Console.WriteLine($"{ChopStickID} is taken by {TakenBy}");
+                Console.WriteLine($"||| {ChopStickID} is taken by {TakenBy}");
                 return true;
             }
             
@@ -101,7 +126,7 @@ class Chopstick{
 
     public void Put(){
         State = ChopstickState.onTable;
-        Console.WriteLine($"{ChopStickID} is placed on the table by {TakenBy}");
+        Console.WriteLine($"||| {ChopStickID} is placed on the table by {TakenBy}");
         TakenBy = String.Empty;
     }
 
