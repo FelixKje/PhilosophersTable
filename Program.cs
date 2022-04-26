@@ -20,16 +20,16 @@ Console.ReadKey();
 enum PhilosopherState { Eating, Thinking }
 class Philosopher{
     
-    public string Name{ get; set; }
+    string Name{ get; set; }
     
-    public PhilosopherState State{ get; set; }
+    PhilosopherState State{ get; set; }
 
     readonly int StarvationThreshold;
 
     int timesEaten = 0;
 
-    public readonly Chopstick RightChopstick;
-    public readonly Chopstick LeftChopstick;
+    readonly Chopstick RightChopstick;
+    readonly Chopstick LeftChopstick;
 
     Random rand = new Random();
 
@@ -43,7 +43,7 @@ class Philosopher{
         StarvationThreshold = starvationThreshold;
     }
 
-    public void Eat(){
+    void Eat(){
         if (TakeChopstickInRightHand()){
             if (TakeChopstickInLeftHand()){
                 Eating();
